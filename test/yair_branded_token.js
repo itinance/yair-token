@@ -9,11 +9,14 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
   let instance;
 
-  beforeEach('should setup the contract instance', async () => {
-    instance = await YairBrandedToken.new(0, 1000, {from: creator});
+  const buyer1 = accounts[0];
+  const buyer2 = accounts[1];
 
-    console.log(-1, creator);
-    console.log(-2, await instance.getCreator());
+  const maxSupply = 1000;
+  const initialSupply = 0;
+
+  beforeEach('should setup the contract instance', async () => {
+    instance = await YairBrandedToken.new(initialSupply, maxSupply, {from: creator});
   });
 
   it("Token contract can be deployed and has the right creator", async () => {
@@ -21,21 +24,33 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
     assert.lengthOf(instance.address, 42);
 
     assert.equal(await instance.getCreator(), creator)
-    assert.equal(await instance.balanceOf(0x0), 0);
+    assert.equal(await instance.balanceOf( 0x0 ), 0);
+    assert.equal(await instance.balanceOf( creator ), initialSupply);
   });
 
   it("Can mint token for an artwork", async () => {
+    // buyer1 mints 99 token
+    await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+    assert.equal(await instance.balanceOf(buyer1), 99);
+    assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer1), 99);
+    assert.equal(await instance.balanceOf(buyer2), 0);
+    assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer2), 0);
 
-    const minter = accounts[0];
-    console.log(1, minter);
-    console.log(2, creator);
+    // buyer2 mints 66 token
+    await instance.mintTokenForArtworkIdAndSendTo(66, "Artwork1", buyer2, { from: creator });
+    assert.equal(await instance.balanceOf(buyer1), 99);
+    assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer1), 99);
+    assert.equal(await instance.balanceOf(buyer2), 66);
+    assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer2), 66);
 
-    console.log(3, await instance.test());
+    // buyer1 mints another 123 token on a second artwork
+    await instance.mintTokenForArtworkIdAndSendTo(123, "SECOND", buyer1, { from: creator });
+    assert.equal(await instance.balanceOf(buyer1), 99 + 123);
+    assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer1), 99);
+    assert.equal(await instance.balancePerArtworkOf("SECOND", buyer1), 123);
+    assert.equal(await instance.balanceOf(buyer2), 66);
+    assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer2), 66);
+    assert.equal(await instance.balancePerArtworkOf("SECOND", buyer2), 0);
 
-    return;
-
-    await instance.mintTokenForArtworkId(100, "Artwork1", { from: creator });
-
-    assert.equal(await instance.balanceOf(0x0), 0);
   })
 });

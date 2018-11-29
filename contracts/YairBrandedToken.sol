@@ -44,18 +44,6 @@ contract YairBrandedToken is IERC20 {
         return 0;
     }
 
-    function balanceOf(address owner) external view returns (uint256) {
-        return _balances[owner];
-    }
-
-    function test() external view returns (address) {
-        return msg.sender;
-    }
-
-    function balancePerArtworkOf(string artworkId, address owner) external view returns (uint256) {
-        return _balancesPerArtwork[artworkId][owner];
-    }
-
     function mintTokenForArtworkId(uint256 count, string artworkId) {
         // Make sure only the contract creator can call this
         require(msg.sender == _creator);
@@ -63,6 +51,39 @@ contract YairBrandedToken is IERC20 {
 
         _balances[msg.sender] = _balances[msg.sender].add(count);
         _balancesPerArtwork[artworkId][msg.sender] = _balancesPerArtwork[artworkId][msg.sender].add(count);
+    }
+
+    /**
+     * @dev mint tokens for specific artwork and send them to a buyer
+     * @param count The number of how many token will be minted
+     * @param artworkId The artwork ID for which the token will be minted
+     * @param buyer The buyer where the token will be send to
+     */
+    function mintTokenForArtworkIdAndSendTo(uint256 count, string artworkId, address buyer) {
+        // Make sure only the contract creator can call this
+        require(msg.sender == _creator);
+        require(count > 0);
+        require(buyer != address(0));
+
+        // increase the generell token count for buyer
+        _balances[buyer] = _balances[buyer].add(count);
+
+        // increase the balances for artwork for the buyer
+        _balancesPerArtwork[artworkId][buyer] = _balancesPerArtwork[artworkId][buyer].add(count);
+    }
+
+    /**
+     * @param buyer Returns the number of tokens for specific owner
+     */
+    function balanceOf(address owner) external view returns (uint256) {
+        return _balances[owner];
+    }
+
+    /**
+     * @param buyer Returns the number of tokens for specific owner for a specific artwork
+     */
+    function balancePerArtworkOf(string artworkId, address owner) external view returns (uint256) {
+        return _balancesPerArtwork[artworkId][owner];
     }
 
     function allowance(address owner, address spender) external view returns (uint256) {
