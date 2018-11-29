@@ -73,14 +73,15 @@ contract YairBrandedToken is IERC20 {
     }
 
     /**
-     * @param buyer Returns the number of tokens for specific owner
+     * @param owner Returns the number of tokens for specific owner
      */
     function balanceOf(address owner) external view returns (uint256) {
         return _balances[owner];
     }
 
     /**
-     * @param buyer Returns the number of tokens for specific owner for a specific artwork
+     * @param owner the artwork
+     * @param owner Returns the number of tokens for specific owner for a specific artwork
      */
     function balancePerArtworkOf(string artworkId, address owner) external view returns (uint256) {
         return _balancesPerArtwork[artworkId][owner];
