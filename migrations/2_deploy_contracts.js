@@ -1,0 +1,28 @@
+const InitialArtworkOffering = artifacts.require('./InitialArtworkOffering.sol');
+const YairBrandedToken = artifacts.require('./YairBrandedToken.sol');
+
+const ARTWORK_ID_DEFAULT = 'artwork_0';
+
+module.exports = function(deployer, network, accounts) {
+    const openingTime = web3.eth.getBlock('latest').timestamp + 2; // two secs in the future
+    const closingTime = openingTime + 86400 * 30; // 30 days
+    const rate = new web3.BigNumber(1000);
+    const wallet = accounts[1];
+
+
+    return deployer
+        .then(() => {
+            return deployer.deploy(YairBrandedToken, 0, 1000);
+        })
+        .then(() => {
+            console.log(YairBrandedToken.address);
+            return deployer.deploy(
+                InitialArtworkOffering,
+                openingTime,
+                closingTime,
+                rate,
+                wallet,
+                YairBrandedToken.address
+            );
+        });
+};
