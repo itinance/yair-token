@@ -16,11 +16,17 @@ contract YairBrandedToken is IERC20 {
     // the maximum supply on tokens that can be minted
     uint256 _maxSupply;
 
+    // the total of minted tokens
+    uint256 _totalSupply;
+
     // mapping storing the balance of each address
     mapping(address => uint256) internal _balances;
 
     // mapping storing the balance of each address for specific artwork
     mapping(string => mapping(address => uint256)) internal _balancesPerArtwork;
+
+    // mapping storing the minted tokens for each artwork
+    mapping(string => uint256) internal _totalSupplyPerArtwork;
 
     // A mapping of token owners
     mapping(uint256 => address) internal owners;
@@ -36,22 +42,39 @@ contract YairBrandedToken is IERC20 {
         _balances[msg.sender] = initialSupply;
     }
 
-    function getCreator() external view returns (address) {
+    function creator() external view returns (address) {
         return _creator;
     }
 
+    /**
+     * @dev returns the total minted token
+     */
     function totalSupply() external view returns (uint256) {
-        return 0;
+        return _totalSupply;
     }
 
-    function mintTokenForArtworkId(uint256 count, string artworkId) {
+    /**
+     * @dev returns the total minted supply of token for a specific artwork
+     */
+    function totalSupplyPerArtwork(string artworkId) external view returns (uint256) {
+        return _totalSupplyPerArtwork[artworkId];
+    }
+
+    function maxSupply() external view returns (uint256) {
+        return _maxSupply;
+    }
+
+    /*function mintTokenForArtworkId(uint256 count, string artworkId) {
         // Make sure only the contract creator can call this
         require(msg.sender == _creator);
         require(count > 0);
+        require(_totalSupply.add(count) < _maxSupply);
 
         _balances[msg.sender] = _balances[msg.sender].add(count);
         _balancesPerArtwork[artworkId][msg.sender] = _balancesPerArtwork[artworkId][msg.sender].add(count);
-    }
+
+        _totalSupply = _totalSupply.add(count);
+    }*/
 
     /**
      * @dev mint tokens for specific artwork and send them to a buyer
@@ -70,6 +93,9 @@ contract YairBrandedToken is IERC20 {
 
         // increase the balances for artwork for the buyer
         _balancesPerArtwork[artworkId][buyer] = _balancesPerArtwork[artworkId][buyer].add(count);
+
+        _totalSupply = _totalSupply.add(count);
+        _totalSupplyPerArtwork[artworkId] = _totalSupplyPerArtwork[artworkId].add(count);
     }
 
     /**
