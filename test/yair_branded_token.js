@@ -1,4 +1,5 @@
 const truffleAssert = require('truffle-assertions');
+
 const chai = require('chai');
 const should = chai.should();
 const assert = chai.assert;
@@ -80,9 +81,17 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
     await instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 10);
 
-
     assert.equal(await instance.balanceOf(buyer1), 99 - 10);
     assert.equal(await instance.balanceOf(buyer2), 10);
+  });
+
+  it("Can't transfer more token of an artwork as a buyer currently holds", async () => {
+    // buyer1 mints 99 token
+    await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+
+    // buyer1 want to transfer more token than he holds
+    // we expect a revert()
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 100));
   });
 
 });
