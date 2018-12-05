@@ -94,4 +94,25 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
     await truffleAssert.reverts (instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 100));
   });
 
+  it("can't transfer token of an artwork that do i not have", async () => {
+    // we expect a revert()
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 10));
+  });
+
+  it("external transfer method will revert on invalid humbers", async () => {
+    // we expect a revert()
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", -1));
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 0));
+  });
+
+  it("external transfer method will revert on invalid addresses", async () => {
+    // buyer1 mints 99 token
+    await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+
+    // we expect a revert()
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(0x0, buyer2, "Artwork1", 10));
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(buyer1, 0x0, "Artwork1", 10));
+    await truffleAssert.reverts (instance.transferTokenForArtworkFrom(0x0, 0x0, "Artwork1", 10));
+  });
+
 });

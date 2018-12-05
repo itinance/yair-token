@@ -139,7 +139,9 @@ contract YairBrandedToken is IERC20 {
      * @param count The number of token to be removed from the buyers account
      */
     function transferTokenForArtworkFrom(address from, address to, string artworkId, uint256 count) external returns (bool) {
+        require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count ));
+        require(from != address(0));
         require(to != address(0));
 
         _removeTokenForArtworkFrom(from, artworkId, count);
