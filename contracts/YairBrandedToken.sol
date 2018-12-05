@@ -80,9 +80,9 @@ contract YairBrandedToken is IERC20 {
 
     /**
      * @dev mint tokens for specific artwork and send them to a buyer
-     * @param count uint256 The number of how many token will be minted
+     * @param count The number of how many token will be minted
      * @param artworkId string The artwork ID for which the token will be minted
-     * @param buyer address The buyer where the token will be send to
+     * @param buyer The buyer where the token will be send to
      */
     function mintTokenForArtworkIdAndSendTo(uint256 count, string artworkId, address buyer) {
         // Make sure only the contract creator can call this
@@ -131,6 +131,13 @@ contract YairBrandedToken is IERC20 {
         return false;
     }
 
+    /**
+     * @dev transfer artwork-related token from a buyer to another buyer
+     * @param from The old account that holds the token and want to transfer
+     * @param to The new buyer that will receive the token
+     * @param artworkId The Artwork that is meaned
+     * @param count The number of token to be removed from the buyers account
+     */
     function transferTokenForArtworkFrom(address from, address to, string artworkId, uint256 count) external returns (bool) {
         require(_isApprovedOrOwner(from, artworkId, count ));
         require(to != address(0));
@@ -141,12 +148,24 @@ contract YairBrandedToken is IERC20 {
         //emit Transfer(from, to, artworkId, count);
     }
 
+    /**
+     * @dev removes token from the artwork-related tokens of a specific account (from)
+     * @param from The buyer that holds the token
+     * @param artworkId The Artwork that is meaned
+     * @param count The number of token to be removed from the buyers account
+     */
     function _removeTokenForArtworkFrom(address from, string artworkId, uint256 count) internal {
         require(_buyerHoldsAsLeast(from, artworkId, count));
         _balances[from] = _balances[from].sub(count);
         _balancesPerArtwork[artworkId][from] = _balancesPerArtwork[artworkId][from].sub(count);
     }
 
+    /**
+     * @dev add token from the artwork-related tokens to a specific account (from)
+     * @param to The account that will receive the token
+     * @param artworkId The Artwork that is meaned
+     * @param count The number of token to be added to the buyers account
+     */
     function _addTokenForArtworkTo(address to, string artworkId, uint256 count) internal {
         _balances[to] = _balances[to].add(count);
         _balancesPerArtwork[artworkId][to] = _balancesPerArtwork[artworkId][to].add(count);
@@ -154,9 +173,9 @@ contract YairBrandedToken is IERC20 {
 
     /**
      * @dev Returns wether the given spender is allowed to transfer a given count of tokens for a specific artwork
-     * @param spender address of the sepnder to query
-     * @param artworkId string The specific artwork
-     * @param count uint256 The number of token that needs to be approved to send
+     * @param spender of the sepnder to query
+     * @param artworkId The specific artwork
+     * @param count The number of token that needs to be approved to send
      * @return bool wether the msg.sender is approved for the given artworkId holding at least the requested number of tokens
      *   or is the creator with at least the required amount of minted token for the artwork
      */
