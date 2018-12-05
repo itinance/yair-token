@@ -1888,10 +1888,10 @@ trim@0.0.1:
   resolved "https://registry.yarnpkg.com/trim/-/trim-0.0.1.tgz#5858547f6b290757ee95cccc666fb50084c460dd"
   integrity sha1-WFhUf2spB1fulczMZm+1AITEYN0=
 
-truffle-assertions@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/truffle-assertions/-/truffle-assertions-0.6.3.tgz#519c00ea80b5cefe609af78645d8e72c98708250"
-  integrity sha512-0j8WU7tc4tDhQauiGqgRFOQtH0QLlc/T/jd2KjSrw3kvJxu4IZU0KAdosohN2nFAnrGHF/O4K1da/yEQjwgH7g==
+truffle-assertions@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.yarnpkg.com/truffle-assertions/-/truffle-assertions-0.7.0.tgz#a62b0f98d31620c6f538e47f8ff6ac80060148cf"
+  integrity sha512-5KTdrheO5nW7zRRPbt3Gf5cvqYcXX2dLLg96gC8atQhF28qqJYDQAl31GxoTB2uy8PW7bRIog+WFET46PzENrg==
   dependencies:
     assertion-error "^1.1.0"
     web3 "^1.0.0-beta.35"
