@@ -6,6 +6,8 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 contract YairBrandedToken is IERC20 {
     using SafeMath for uint256;
 
+    event Transfer(address indexed from, address indexed to, string indexed artworkId, uint256 count);
+
     string public name = "Yair Branded Token";
     string public symbol = "YBT";
     uint8 public decimals = 18;
@@ -78,9 +80,9 @@ contract YairBrandedToken is IERC20 {
 
     /**
      * @dev mint tokens for specific artwork and send them to a buyer
-     * @param count The number of how many token will be minted
-     * @param artworkId The artwork ID for which the token will be minted
-     * @param buyer The buyer where the token will be send to
+     * @param count uint256 The number of how many token will be minted
+     * @param artworkId string The artwork ID for which the token will be minted
+     * @param buyer address The buyer where the token will be send to
      */
     function mintTokenForArtworkIdAndSendTo(uint256 count, string artworkId, address buyer) {
         // Make sure only the contract creator can call this
@@ -129,5 +131,47 @@ contract YairBrandedToken is IERC20 {
         return false;
     }
 
+    function transferTokenForArtworkFrom(address from, address to, string artworkId, uint256 count) external returns (bool) {
+        require(_isApprovedOrOwner(from, artworkId, count ));
+        require(to != address(0));
+
+        _removeTokenForArtworkFrom(from, artworkId, count);
+        _addTokenForArtworkTo(to, artworkId, count);
+
+        //emit Transfer(from, to, artworkId, count);
+    }
+
+    function _removeTokenForArtworkFrom(address from, string artworkId, uint256 count) internal {
+        require(_buyerHoldsAsLeast(from, artworkId, count));
+        _balances[from] = _balances[from].sub(count);
+        _balancesPerArtwork[artworkId][from] = _balancesPerArtwork[artworkId][from].sub(count);
+    }
+
+    function _addTokenForArtworkTo(address to, string artworkId, uint256 count) internal {
+        _balances[to] = _balances[to].add(count);
+        _balancesPerArtwork[artworkId][to] = _balancesPerArtwork[artworkId][to].add(count);
+    }
+
+    /**
+     * @dev Returns wether the given spender is allowed to transfer a given count of tokens for a specific artwork
+     * @param spender address of the sepnder to query
+     * @param artworkId string The specific artwork
+     * @param count uint256 The number of token that needs to be approved to send
+     * @return bool wether the msg.sender is approved for the given artworkId holding at least the requested number of tokens
+     *   or is the creator with at least the required amount of minted token for the artwork
+     */
+    function _isApprovedOrOwner(address spender, string artworkId, uint256 count) internal view returns (bool) {
+        return (
+            // the creator is approved always if the specific number of requested tokens was minted currently
+            (spender == _creator && _totalSupplyPerArtwork[artworkId] >= count)
+            ||
+            // or the spender holds a minimum of the minted requested token count
+            _buyerHoldsAsLeast(spender, artworkId, count)
+        );
+    }
+
+    function _buyerHoldsAsLeast(address spender, string artworkId, uint256 count) internal view returns (bool) {
+        return _balancesPerArtwork[artworkId][spender] >= count;
+    }
 }
 

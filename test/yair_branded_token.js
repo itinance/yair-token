@@ -70,4 +70,19 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
     assert.equal(await instance.balancePerArtworkOf("SECOND", buyer2), 0);
 
   })
+
+  it("Can transfer owned token of an artwork", async () => {
+    // buyer1 mints 99 token
+    await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+
+    assert.equal(await instance.balanceOf(buyer1), 99);
+    assert.equal(await instance.balanceOf(buyer2), 0);
+
+    await instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 10);
+
+
+    assert.equal(await instance.balanceOf(buyer1), 99 - 10);
+    assert.equal(await instance.balanceOf(buyer2), 10);
+  });
+
 });
