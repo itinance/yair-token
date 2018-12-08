@@ -61,7 +61,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
     /**
      * @dev returns the total minted supply of token for a specific artwork
      */
-    function totalSupplyPerArtwork(bytes16 artworkId) external view returns (uint256) {
+    function totalSupplyPerArtwork(bytes16 artworkId) onlyRegistered(artworkId) external view returns (uint256) {
         return _totalSupplyPerArtwork[artworkId];
     }
 
@@ -87,7 +87,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId string The artwork ID for which the token will be minted
      * @param buyer The buyer where the token will be send to
      */
-    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) {
+    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) onlyRegistered(artworkId) {
         // Make sure only the contract creator can call this
         require(msg.sender == _creator);
         require(count > 0);
@@ -114,7 +114,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param owner the artwork
      * @param owner Returns the number of tokens for specific owner for a specific artwork
      */
-    function balancePerArtworkOf(bytes16 artworkId, address owner) external view returns (uint256) {
+    function balancePerArtworkOf(bytes16 artworkId, address owner) onlyRegistered(artworkId) external view returns (uint256) {
         return _balancesPerArtwork[artworkId][owner];
     }
 
@@ -141,7 +141,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) external returns (bool) {
+    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) onlyRegistered(artworkId) external returns (bool) {
         require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count ));
         require(from != address(0));
