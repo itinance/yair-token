@@ -28,10 +28,10 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
     mapping(address => uint256) internal _balances;
 
     // mapping storing the balance of each address for specific artwork
-    mapping(string => mapping(address => uint256)) internal _balancesPerArtwork;
+    mapping(bytes16 => mapping(address => uint256)) internal _balancesPerArtwork;
 
     // mapping storing the minted tokens for each artwork
-    mapping(string => uint256) internal _totalSupplyPerArtwork;
+    mapping(bytes16 => uint256) internal _totalSupplyPerArtwork;
 
     // A mapping of token owners
     mapping(uint256 => address) internal owners;
@@ -61,7 +61,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
     /**
      * @dev returns the total minted supply of token for a specific artwork
      */
-    function totalSupplyPerArtwork(string artworkId) external view returns (uint256) {
+    function totalSupplyPerArtwork(bytes16 artworkId) external view returns (uint256) {
         return _totalSupplyPerArtwork[artworkId];
     }
 
@@ -87,7 +87,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId string The artwork ID for which the token will be minted
      * @param buyer The buyer where the token will be send to
      */
-    function mintTokenForArtworkIdAndSendTo(uint256 count, string artworkId, address buyer) {
+    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) {
         // Make sure only the contract creator can call this
         require(msg.sender == _creator);
         require(count > 0);
@@ -114,7 +114,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param owner the artwork
      * @param owner Returns the number of tokens for specific owner for a specific artwork
      */
-    function balancePerArtworkOf(string artworkId, address owner) external view returns (uint256) {
+    function balancePerArtworkOf(bytes16 artworkId, address owner) external view returns (uint256) {
         return _balancesPerArtwork[artworkId][owner];
     }
 
@@ -141,7 +141,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function transferTokenForArtworkFrom(address from, address to, string artworkId, uint256 count) external returns (bool) {
+    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) external returns (bool) {
         require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count ));
         require(from != address(0));
@@ -159,7 +159,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function _removeTokenForArtworkFrom(address from, string artworkId, uint256 count) internal {
+    function _removeTokenForArtworkFrom(address from, bytes16 artworkId, uint256 count) internal {
         require(_buyerHoldsAsLeast(from, artworkId, count));
         _balances[from] = _balances[from].sub(count);
         _balancesPerArtwork[artworkId][from] = _balancesPerArtwork[artworkId][from].sub(count);
@@ -171,7 +171,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be added to the buyers account
      */
-    function _addTokenForArtworkTo(address to, string artworkId, uint256 count) internal {
+    function _addTokenForArtworkTo(address to, bytes16 artworkId, uint256 count) internal {
         _balances[to] = _balances[to].add(count);
         _balancesPerArtwork[artworkId][to] = _balancesPerArtwork[artworkId][to].add(count);
     }
@@ -184,7 +184,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @return bool wether the msg.sender is approved for the given artworkId holding at least the requested number of tokens
      *   or is the creator with at least the required amount of minted token for the artwork
      */
-    function _isApprovedOrOwner(address spender, string artworkId, uint256 count) internal view returns (bool) {
+    function _isApprovedOrOwner(address spender, bytes16 artworkId, uint256 count) internal view returns (bool) {
         return (
             // the creator is approved always if the specific number of requested tokens was minted currently
             (spender == _creator && _totalSupplyPerArtwork[artworkId] >= count)
@@ -194,7 +194,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
         );
     }
 
-    function _buyerHoldsAsLeast(address spender, string artworkId, uint256 count) internal view returns (bool) {
+    function _buyerHoldsAsLeast(address spender, bytes16 artworkId, uint256 count) internal view returns (bool) {
         return _balancesPerArtwork[artworkId][spender] >= count;
     }
 }
