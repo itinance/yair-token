@@ -1,5 +1,6 @@
 const InitialArtworkOffering = artifacts.require('./InitialArtworkOffering.sol');
 const YairBrandedToken = artifacts.require('./YairBrandedToken.sol');
+const ArtworkRegistry = artifacts.require('./ArtworkRegistry.sol');
 
 const ARTWORK_ID_DEFAULT = 'artwork_0';
 
@@ -11,6 +12,9 @@ module.exports = function(deployer, network, accounts) {
 
 
     return deployer
+        .then(() => {
+            return deployer.deploy(ArtworkRegistry);
+        })
         .then(() => {
             return deployer.deploy(YairBrandedToken, 0, 1000);
         })
