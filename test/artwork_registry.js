@@ -15,7 +15,12 @@ contract('ArtworkRegistry', ([_, creator, ...accounts]) => {
     });
 
     it("Registering artwork works as expected ", async () => {
-        await registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto");
+        const tx = await registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto");
+
+        truffleAssert.eventEmitted(tx, 'ArtworkWasRegistered', (ev) => {
+            return web3.toUtf8(ev.artworkId) == "Artwork 1" && ev.title == "The Sun";
+        });
+
         assert.isTrue( await registry.isArtworkRegistered("Artwork 1") );
     });
 

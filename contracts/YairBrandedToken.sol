@@ -2,8 +2,11 @@ pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 
-contract YairBrandedToken is IERC20 {
+import "./ArtworkRegistry.sol";
+
+contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
     using SafeMath for uint256;
 
     event Transfer(address indexed from, address indexed to, string indexed artworkId, uint256 count);
