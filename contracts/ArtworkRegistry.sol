@@ -13,9 +13,17 @@ contract ArtworkRegistry {
 
     event ArtworkWasRegistered(bytes16 artworkId, string title, string artist);
 
-    function registerArtwork(bytes16 artworkId, string title, string artist) external returns (bool) {
-        require( ! _isArtworkRegistered(artworkId) );
+    modifier onlyRegistered(bytes16 artworkId) {
+        require(_isArtworkRegistered(artworkId));
+        _;
+    }
 
+    modifier onlyIfUnregistered(bytes16 artworkId) {
+        require(! _isArtworkRegistered(artworkId));
+        _;
+    }
+
+    function registerArtwork(bytes16 artworkId, string title, string artist) onlyIfUnregistered(artworkId) external returns (bool) {
         Artwork memory artwork = Artwork(artworkId, title, artist);
         _artworks[artworkId] = artwork;
 
