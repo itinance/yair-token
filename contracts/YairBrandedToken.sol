@@ -1,12 +1,11 @@
 pragma solidity 0.4.24;
 
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 
 import "./ArtworkRegistry.sol";
 
-contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
+contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
     using SafeMath for uint256;
 
     event Transfer(address indexed from, address indexed to, string indexed artworkId, uint256 count);
@@ -119,22 +118,6 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      */
     function balancePerArtworkOf(bytes16 artworkId, address owner) onlyRegistered(artworkId) external view returns (uint256) {
         return _balancesPerArtwork[artworkId][owner];
-    }
-
-    function allowance(address /* owner*/, address /*spender*/) external view returns (uint256) {
-        revert();
-    }
-
-    function transfer(address to, uint256 value) external returns (bool) {
-        revert();
-    }
-
-    function approve(address spender, uint256 value) external returns (bool) {
-        revert();
-    }
-
-    function transferFrom(address from, address to, uint256 value) external returns (bool) {
-        revert();
     }
 
     /**
