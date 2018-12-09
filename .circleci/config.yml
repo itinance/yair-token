@@ -9,9 +9,7 @@ jobs:
     docker:
       - image: circleci/node:7.10
       - image: trufflesuite/ganache-cli
-
-
-  steps:
+    steps:
       - checkout
       - run:
           name: Update npm
