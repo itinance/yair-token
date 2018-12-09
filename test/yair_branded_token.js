@@ -94,7 +94,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
       truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
-          && ev.from === creator && ev.to === buyer1;
+          && ev.from == 0x0 && ev.to === buyer1;
       });
 
       assert.equal(await instance.balanceOf(buyer1), 99);

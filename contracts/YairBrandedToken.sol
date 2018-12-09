@@ -98,7 +98,7 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
         _totalSupply = _totalSupply.add(count);
         _totalSupplyPerArtwork[artworkId] = _totalSupplyPerArtwork[artworkId].add(count);
 
-        emit Transfer(_creator, buyer, artworkId, count);
+        emit Transfer(address(0), buyer, artworkId, count);
     }
 
     /**
