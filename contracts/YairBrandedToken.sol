@@ -89,9 +89,7 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
      * @param artworkId string The artwork ID for which the token will be minted
      * @param buyer The buyer where the token will be send to
      */
-    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) public onlyRegistered(artworkId) {
-        // Make sure only the contract creator can call this
-        require(msg.sender == _creator);
+    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) public onlyRegistered(artworkId) onlyOwner {
         require(count > 0);
         require(buyer != address(0));
 
@@ -173,7 +171,7 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
     function _isApprovedOrOwner(address spender, bytes16 artworkId, uint256 count) internal view returns (bool) {
         return (
             // the creator is approved always if the specific number of requested tokens was minted currently
-            (spender == _creator && _totalSupplyPerArtwork[artworkId] >= count)
+            (isOwner() && _totalSupplyPerArtwork[artworkId] >= count)
             ||
             // or the spender holds a minimum of the minted requested token count
             _buyerHoldsAsLeast(spender, artworkId, count)
