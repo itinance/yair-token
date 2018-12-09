@@ -38,13 +38,9 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       await instance.registerArtwork("SECOND", "Artwork 1", "Satoshi Nakamoto", {from: creator});
     });
 
-    it("Token contract can be deployed and has the right creator", async () => {
+    it("Token contract can be deployed", async () => {
       should.exist(instance);
       assert.lengthOf(instance.address, 42);
-
-      assert.equal(await instance.creator(), creator)
-      assert.equal(await instance.balanceOf( 0x0 ), 0);
-      assert.equal(await instance.balanceOf( creator ), initialSupply);
     });
 
     it("Can mint token for an artwork", async () => {

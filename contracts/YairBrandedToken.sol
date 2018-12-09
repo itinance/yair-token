@@ -14,9 +14,6 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
     string public symbol = "YBT";
     uint8 public decimals = 18;
 
-    // The address of the contract creator
-    address internal _creator;
-
     // the maximum supply on tokens that can be minted
     uint256 _maxSupply;
 
@@ -40,17 +37,9 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
         require(initialSupply <= maxSupply);
 
         _maxSupply = maxSupply;
-        _creator = msg.sender;
 
         // All initial tokens belong to creator, so set the balance
         _balances[msg.sender] = initialSupply;
-    }
-
-    /**
-     * @dev returns the creator
-     */
-    function creator() external view returns (address) {
-        return _creator;
     }
 
     /**
