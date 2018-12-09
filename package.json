@@ -4,5 +4,8 @@
     "chai-bignumber": "^3.0.0",
     "openzeppelin-solidity": "^2.0.0",
     "truffle-assertions": "^0.7.0"
+  },
+  "devDependencies": {
+    "solidity-coverage": "^0.5.11"
   }
 }
