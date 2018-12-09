@@ -49,7 +49,12 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
     it("Can mint token for an artwork", async () => {
       // buyer1 mints 99 token
-      await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+      let tx = await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+
+      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+        return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
+          && ev.from == 0x0 && ev.to === buyer1;
+      });
 
       assert.equal(await instance.totalSupply(), 99);
       assert.equal(await instance.totalSupplyPerArtwork("Artwork1"), 99);
@@ -61,7 +66,12 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       assert.equal(await instance.totalSupplyPerArtwork("SECOND"), 0);
 
       // buyer2 mints 66 token
-      await instance.mintTokenForArtworkIdAndSendTo(66, "Artwork1", buyer2, { from: creator });
+      tx = await instance.mintTokenForArtworkIdAndSendTo(66, "Artwork1", buyer2, { from: creator });
+
+      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+        return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 66
+          && ev.from == 0x0 && ev.to === buyer2;
+      });
 
       assert.equal(await instance.totalSupply(), 99 + 66);
       assert.equal(await instance.totalSupplyPerArtwork("Artwork1"), 99 + 66);
@@ -73,7 +83,13 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       assert.equal(await instance.balancePerArtworkOf("Artwork1", buyer2), 66);
 
       // buyer1 mints another 123 token on a second artwork
-      await instance.mintTokenForArtworkIdAndSendTo(123, "SECOND", buyer1, { from: creator });
+      tx = await instance.mintTokenForArtworkIdAndSendTo(123, "SECOND", buyer1, { from: creator });
+
+      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+        return web3.toUtf8(ev.artworkId) === "SECOND" && ev.count == 123
+          && ev.from == 0x0 && ev.to === buyer1;
+      });
+
 
       assert.equal(await instance.totalSupply(), 99 + 66 + 123);
       assert.equal(await instance.totalSupplyPerArtwork("Artwork1"), 99 + 66);
@@ -113,7 +129,12 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
     it("Can't transfer more token of an artwork as a buyer currently holds", async () => {
       // buyer1 mints 99 token
-      await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+      const tx = await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
+
+      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+        return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
+          && ev.from == 0x0 && ev.to === buyer1;
+      });
 
       // buyer1 want to transfer more token than he holds
       // we expect a revert()
