@@ -8,7 +8,7 @@ import "./ArtworkRegistry.sol";
 contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
     using SafeMath for uint256;
 
-    event Transfer(address indexed from, address indexed to, string indexed artworkId, uint256 count);
+    event Transfer(address indexed from, address indexed to, bytes16 indexed artworkId, uint256 count);
 
     string public name = "Yair Branded Token";
     string public symbol = "YBT";
@@ -134,7 +134,7 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
         _removeTokenForArtworkFrom(from, artworkId, count);
         _addTokenForArtworkTo(to, artworkId, count);
 
-        //emit Transfer(from, to, artworkId, count);
+        emit Transfer(from, to, artworkId, count);
     }
 
     /**
