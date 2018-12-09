@@ -5,7 +5,6 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 
 import "./ArtworkRegistry.sol";
-//import "./OwnableMultiple.sol";
 
 contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
     using SafeMath for uint256;
@@ -48,6 +47,9 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
         _balances[msg.sender] = initialSupply;
     }
 
+    /**
+     * @dev returns the creator
+     */
     function creator() external view returns (address) {
         return _creator;
     }
