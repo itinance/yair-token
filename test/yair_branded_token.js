@@ -92,10 +92,10 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       // buyer1 mints 99 token
       let tx = await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
 
-      /*truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
           && ev.from === creator && ev.to === buyer1;
-      });*/
+      });
 
       assert.equal(await instance.balanceOf(buyer1), 99);
       assert.equal(await instance.balanceOf(buyer2), 0);
