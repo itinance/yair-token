@@ -93,11 +93,7 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
         require(count > 0);
         require(buyer != address(0));
 
-        // increase the generell token count for buyer
-        _balances[buyer] = _balances[buyer].add(count);
-
-        // increase the balances for artwork for the buyer
-        _balancesPerArtwork[artworkId][buyer] = _balancesPerArtwork[artworkId][buyer].add(count);
+        _addTokenForArtworkTo(buyer, artworkId, count);
 
         _totalSupply = _totalSupply.add(count);
         _totalSupplyPerArtwork[artworkId] = _totalSupplyPerArtwork[artworkId].add(count);
