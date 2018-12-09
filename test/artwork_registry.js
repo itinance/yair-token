@@ -15,7 +15,7 @@ contract('ArtworkRegistry', ([_, creator, ...accounts]) => {
     });
 
     it("Registering artwork works as expected ", async () => {
-        const tx = await registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto");
+        const tx = await registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto", {from: creator});
 
         truffleAssert.eventEmitted(tx, 'ArtworkWasRegistered', (ev) => {
             return web3.toUtf8(ev.artworkId) == "Artwork 1" && ev.title == "The Sun";
@@ -25,9 +25,9 @@ contract('ArtworkRegistry', ([_, creator, ...accounts]) => {
     });
 
     it("Registering artwork twice should fail", async () => {
-        await registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto");
+        await registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto", {from: creator});
 
-        await truffleAssert.reverts(registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto"));
+        await truffleAssert.reverts(registry.registerArtwork("Artwork 1", "The Sun", "Satoshi Nakamoto", {from: creator}));
     });
 
 });

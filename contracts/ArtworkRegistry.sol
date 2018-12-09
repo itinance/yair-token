@@ -1,7 +1,8 @@
 pragma solidity 0.4.24;
 
+import "./OwnableMultiple.sol";
 
-contract ArtworkRegistry {
+contract ArtworkRegistry is OwnableMultiple {
 
     struct Artwork {
         bytes16 id;
@@ -23,7 +24,7 @@ contract ArtworkRegistry {
         _;
     }
 
-    function registerArtwork(bytes16 artworkId, string title, string artist) onlyIfUnregistered(artworkId) external returns (bool) {
+    function registerArtwork(bytes16 artworkId, string title, string artist) onlyIfUnregistered(artworkId) external onlyOwner returns (bool) {
         Artwork memory artwork = Artwork(artworkId, title, artist);
         _artworks[artworkId] = artwork;
 

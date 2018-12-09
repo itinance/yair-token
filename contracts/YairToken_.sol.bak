@@ -1,0 +1,36 @@
+pragma solidity 0.4.24;
+
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/math/SafeMath.sol";
+
+contract YairToken is ERC20 {
+    using SafeMath for uint256;
+
+    string public name = "Yair Token";
+    string public symbol = "YAI";
+    uint8 public decimals = 18;
+
+    // the total of minted tokens
+    uint256 _maxSupply;
+
+    // The address of the contract creator
+    address internal _creator;
+
+    constructor(uint256 maxSupply) public {
+        require(msg.sender != address(0));
+
+        _maxSupply = maxSupply;
+        _creator = msg.sender;
+
+    }
+
+    function creator() external view returns (address) {
+        return _creator;
+    }
+
+    function maxSupply() external view returns (uint256) {
+        return _maxSupply;
+    }
+
+}
+

@@ -5,6 +5,7 @@ import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
 
 import "./ArtworkRegistry.sol";
+//import "./OwnableMultiple.sol";
 
 contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
     using SafeMath for uint256;
@@ -87,7 +88,7 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId string The artwork ID for which the token will be minted
      * @param buyer The buyer where the token will be send to
      */
-    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) onlyRegistered(artworkId) {
+    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) public onlyRegistered(artworkId) {
         // Make sure only the contract creator can call this
         require(msg.sender == _creator);
         require(count > 0);
@@ -118,20 +119,20 @@ contract YairBrandedToken is IERC20, ArtworkRegistry /*, ERC165 */ {
         return _balancesPerArtwork[artworkId][owner];
     }
 
-    function allowance(address owner, address spender) external view returns (uint256) {
-        return 0;
+    function allowance(address /* owner*/, address /*spender*/) external view returns (uint256) {
+        revert();
     }
 
     function transfer(address to, uint256 value) external returns (bool) {
-        return false;
+        revert();
     }
 
     function approve(address spender, uint256 value) external returns (bool) {
-        return false;
+        revert();
     }
 
     function transferFrom(address from, address to, uint256 value) external returns (bool) {
-        return false;
+        revert();
     }
 
     /**

@@ -34,8 +34,8 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
   describe('ArtworkRegistry automatically used', () => {
 
     beforeEach('register artworks for testing ', async () => {
-      await instance.registerArtwork("Artwork1", "Artwork 1", "Satoshi Nakamoto");
-      await instance.registerArtwork("SECOND", "Artwork 1", "Satoshi Nakamoto");
+      await instance.registerArtwork("Artwork1", "Artwork 1", "Satoshi Nakamoto", {from: creator});
+      await instance.registerArtwork("SECOND", "Artwork 1", "Satoshi Nakamoto", {from: creator});
     });
 
     it("Token contract can be deployed and has the right creator", async () => {
