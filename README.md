@@ -1,8 +1,41 @@
-
 ## YAIR Token Development
 
 [![CircleCI](https://circleci.com/gh/yairtoken/yair-token.svg?style=svg&circle-token=f533de9156b9356ab04069cb5daf27fb5f8db2d3)](https://circleci.com/gh/yairtoken/yair-token)
 
+### This project uses:
+- [Truffle v5](https://truffleframework.com/)
+- [Ganache](https://truffleframework.com/ganache)
+- [Solium](https://github.com/duaraghav8/Solium)
+- [OpenZeppelin](https://github.com/OpenZeppelin/openzeppelin-solidity)
+- [Circle CI](https://circleci.com/gh/yairtoken)
+
+### Installation of tools;
+
+1. Install Truffle and Ganache CLI globally.
+
+```
+npm install -g truffle
+npm install -g ganache-cli
+```
+
+### Setup for development
+
+How to set it up for development:
+
+```
+git clone git@github.com:yairtoken/yair-token.git
+cd yair-token
+npm install
+truffle compile
+```
+
+Open in another terminal `ganache-cli`.
+
+Switch back to your main terminal and start migration and run the tests:
+
+```
+truffle migrate && truffle test
+```
 
 
 ## YAIR Token Specs
