@@ -78,7 +78,8 @@ contract YairBrandedToken is ArtworkRegistry, ReentrancyGuard /*, ERC165 */ {
      * @param artworkId string The artwork ID for which the token will be minted
      * @param buyer The buyer where the token will be send to
      */
-    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) public onlyRegistered(artworkId) onlyOwner {
+    function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) 
+        external nonReentrant onlyRegistered(artworkId) onlyOwner {
         require(count > 0);
         require(buyer != address(0));
 
@@ -101,7 +102,8 @@ contract YairBrandedToken is ArtworkRegistry, ReentrancyGuard /*, ERC165 */ {
      * @param owner the artwork
      * @param owner Returns the number of tokens for specific owner for a specific artwork
      */
-    function balancePerArtworkOf(bytes16 artworkId, address owner) onlyRegistered(artworkId) external view returns (uint256) {
+    function balancePerArtworkOf(bytes16 artworkId, address owner) onlyRegistered(artworkId) external 
+        view returns (uint256) {
         return _balancesPerArtwork[artworkId][owner];
     }
 
@@ -112,9 +114,10 @@ contract YairBrandedToken is ArtworkRegistry, ReentrancyGuard /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) onlyRegistered(artworkId) nonReentrant external returns (bool) {
+    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) 
+        onlyRegistered(artworkId) nonReentrant external returns (bool) {
         require(count > 0);
-        require(_isApprovedOrOwner(from, artworkId, count ));
+        require(_isApprovedOrOwner(from, artworkId, count));
         require(from != address(0));
         require(to != address(0));
 
