@@ -2,10 +2,10 @@ pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
-
+import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 import "./ArtworkRegistry.sol";
 
-contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
+contract YairBrandedToken is ArtworkRegistry, ReentrancyGuard /*, ERC165 */ {
     using SafeMath for uint256;
 
     event Transfer(address indexed from, address indexed to, bytes16 indexed artworkId, uint256 count);
@@ -112,7 +112,7 @@ contract YairBrandedToken is ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) onlyRegistered(artworkId) external returns (bool) {
+    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) onlyRegistered(artworkId) nonReentrant external returns (bool) {
         require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count ));
         require(from != address(0));
