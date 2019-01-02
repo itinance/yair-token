@@ -2,12 +2,12 @@ pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
-
 import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 
 import "./ArtworkRegistry.sol";
 
-contract YairToken is IERC20, ArtworkRegistry /*, ERC165 */ {
+contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
     using SafeMath for uint256;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
@@ -82,7 +82,7 @@ contract YairToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param buyer The buyer where the token will be send to
      */
     function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) public
-        onlyRegistered(artworkId) onlyOwner
+        nonReentrant onlyRegistered(artworkId) onlyOwner
     {
         require(count > 0);
         require(buyer != address(0));
@@ -119,7 +119,9 @@ contract YairToken is IERC20, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) onlyRegistered(artworkId) external returns (bool) {
+    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count)
+        onlyRegistered(artworkId) nonReentrant external returns (bool)
+    {
         require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count));
         require(from != address(0));
