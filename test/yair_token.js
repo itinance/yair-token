@@ -6,7 +6,7 @@ const assert = chai.assert;
 
 
 
-const YairBrandedToken = artifacts.require("YairBrandedToken");
+const YairToken = artifacts.require("YairToken");
 
 contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
@@ -19,7 +19,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
   const initialSupply = 0;
 
   beforeEach('setup the contract instance', async () => {
-    instance = await YairBrandedToken.new(initialSupply, maxSupply, {from: creator});
+    instance = await YairToken.new(initialSupply, maxSupply, {from: creator});
   });
 
   describe('ArtworkRegistry without Automation', () => {
@@ -47,7 +47,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       // buyer1 mints 99 token
       let tx = await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
 
-      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'TransferDetailled', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
           && ev.from == 0x0 && ev.to === buyer1;
       });
@@ -64,7 +64,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       // buyer2 mints 66 token
       tx = await instance.mintTokenForArtworkIdAndSendTo(66, "Artwork1", buyer2, { from: creator });
 
-      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'TransferDetailled', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 66
           && ev.from == 0x0 && ev.to === buyer2;
       });
@@ -81,7 +81,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       // buyer1 mints another 123 token on a second artwork
       tx = await instance.mintTokenForArtworkIdAndSendTo(123, "SECOND", buyer1, { from: creator });
 
-      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'TransferDetailled', (ev) => {
         return web3.toUtf8(ev.artworkId) === "SECOND" && ev.count == 123
           && ev.from == 0x0 && ev.to === buyer1;
       });
@@ -104,7 +104,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       // buyer1 mints 99 token
       let tx = await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
 
-      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'TransferDetailled', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
           && ev.from == 0x0 && ev.to === buyer1;
       });
@@ -114,7 +114,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
 
       tx = await instance.transferTokenForArtworkFrom(buyer1, buyer2, "Artwork1", 10);
 
-      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'TransferDetailled', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 10
           && ev.from === buyer1 && ev.to === buyer2;
       });
@@ -127,7 +127,7 @@ contract('YairBrandedToken', ([_, creator, ...accounts]) => {
       // buyer1 mints 99 token
       const tx = await instance.mintTokenForArtworkIdAndSendTo(99, "Artwork1", buyer1, { from: creator });
 
-      truffleAssert.eventEmitted(tx, 'Transfer', (ev) => {
+      truffleAssert.eventEmitted(tx, 'TransferDetailled', (ev) => {
         return web3.toUtf8(ev.artworkId) === "Artwork1" && ev.count == 99
           && ev.from == 0x0 && ev.to === buyer1;
       });

@@ -1,5 +1,5 @@
 const InitialArtworkOffering = artifacts.require('./InitialArtworkOffering.sol');
-const YairBrandedToken = artifacts.require('./YairBrandedToken.sol');
+const YairToken = artifacts.require('./YairToken.sol');
 const ArtworkRegistry = artifacts.require('./ArtworkRegistry.sol');
 const OwnableMultiple = artifacts.require('./OwnableMultiple.sol');
 
@@ -22,17 +22,17 @@ module.exports = function(deployer, network, accounts) {
         })
 
         .then(() => {
-            return deployer.deploy(YairBrandedToken, 0, 1000);
+            return deployer.deploy(YairToken, 0, 1000);
         })
         .then(() => {
-            console.log(YairBrandedToken.address);
+            console.log(YairToken.address);
             return deployer.deploy(
                 InitialArtworkOffering,
                 openingTime,
                 closingTime,
                 rate,
                 wallet,
-                YairBrandedToken.address
+                YairToken.address
             );
         });
 };
