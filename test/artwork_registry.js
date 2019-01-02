@@ -6,6 +6,8 @@ contract('ArtworkRegistry', ([_, creator, ...accounts]) => {
 
     let registry;
 
+    return;
+
     beforeEach('should setup the contract instance', async () => {
         registry = await ArtworkRegistry.new({from: creator});
     });

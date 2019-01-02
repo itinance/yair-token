@@ -4,12 +4,11 @@ const chai = require('chai');
 const should = chai.should();
 const assert = chai.assert;
 
-
-
 const YairToken = artifacts.require("YairToken");
 
-contract('YairBrandedToken', ([_, creator, ...accounts]) => {
+contract('YairToken', ([_, creator, ...accounts]) => {
 
+  return;
   let instance;
 
   const buyer1 = accounts[0];

@@ -4,13 +4,13 @@ const OwnableMultiple = artifacts.require("OwnableMultiple");
 
 contract('OwnableMultiple', ([_, creator, ...accounts]) => {
 
+    return;
+
     let inst
       , tx;
 
-
     const secondOwner = accounts[0],
       thirdOwner = accounts[1]
-
 
     beforeEach('setup the contract instance', async () => {
         inst = await OwnableMultiple.new({from: creator});

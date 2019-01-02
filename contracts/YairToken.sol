@@ -108,7 +108,7 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      * @param owner the artwork
      * @param owner Returns the number of tokens for specific owner for a specific artwork
      */
-    function balancePerArtworkOf(bytes16 artworkId, address owner) onlyRegistered(artworkId) external view returns (uint256) {
+    function balancePerArtworkOf(bytes16 artworkId, address owner) external onlyRegistered(artworkId) view returns (uint256) {
         return _balancesPerArtwork[artworkId][owner];
     }
 
@@ -119,8 +119,8 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      * @param artworkId The Artwork that is meaned
      * @param count The number of token to be removed from the buyers account
      */
-    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count)
-        onlyRegistered(artworkId) nonReentrant external returns (bool)
+    function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) external
+        onlyRegistered(artworkId) nonReentrant returns (bool)
     {
         require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count));
@@ -135,19 +135,19 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
     }
 
     function allowance(address owner, address spender) external view returns (uint256) {
-
+        revert();
     }
 
     function transfer(address to, uint256 value) external returns (bool) {
-
+        revert();
     }
 
     function approve(address spender, uint256 value) external returns (bool) {
-
+        revert();
     }
 
     function transferFrom(address from, address to, uint256 value) external returns (bool) {
-
+        revert();
     }
 
 

@@ -1,5 +1,6 @@
-const InitialArtworkOffering = artifacts.require('./InitialArtworkOffering.sol');
 const YairToken = artifacts.require('./YairToken.sol');
+const YairTokenSale = artifacts.require('./YairTokenSale.sol');
+const InitialArtworkOffering = artifacts.require('./InitialArtworkOffering.sol');
 const ArtworkRegistry = artifacts.require('./ArtworkRegistry.sol');
 const OwnableMultiple = artifacts.require('./OwnableMultiple.sol');
 
@@ -25,11 +26,21 @@ module.exports = function(deployer, network, accounts) {
             return deployer.deploy(YairToken, 0, 1000);
         })
         .then(() => {
+            return deployer.deploy(
+                YairTokenSale,
+                openingTime,
+                closingTime,
+                rate,
+                wallet,
+                YairToken.address
+            );
+        })
+        .then(() => {
             console.log(YairToken.address);
             return deployer.deploy(
                 InitialArtworkOffering,
                 openingTime,
-                closingTime,
+                openingTime + 86400 * 1, // 1 days,
                 rate,
                 wallet,
                 YairToken.address
