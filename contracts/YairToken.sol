@@ -171,7 +171,7 @@ contract YairToken is ERC20Mintable, ERC20Detailed, ArtworkRegistry, ReentrancyG
     function _isApprovedOrOwner(address spender, bytes16 artworkId, uint256 count) internal view returns (bool) {
         return (
             // the creator is approved always if the specific number of requested tokens was minted currently
-            (/*isOwner() &&*/ _totalSupplyPerArtwork[artworkId] >= count)
+            (isOwner() && _totalSupplyPerArtwork[artworkId] >= count)
             ||
             // or the spender holds a minimum of the minted requested token count
             _buyerHoldsAsLeast(spender, artworkId, count)
