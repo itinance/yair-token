@@ -4,8 +4,6 @@ const OwnableMultiple = artifacts.require("OwnableMultiple");
 
 contract('OwnableMultiple', ([_, creator, ...accounts]) => {
 
-    return;
-
     let inst
       , tx;
 
