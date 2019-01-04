@@ -12,7 +12,6 @@ import "./ArtworkRegistry.sol";
 contract YairToken is ERC20Mintable, ERC20Detailed, ArtworkRegistry, ReentrancyGuard /*, ERC165 */ {
     using SafeMath for uint256;
 
-    event Transfer(address indexed from, address indexed to, uint256 value);
     event TransferDetailled(address indexed from, address indexed to, bytes16 indexed artworkId, uint256 count);
 
     // the maximum supply on tokens that can be minted
