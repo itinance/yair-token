@@ -1,3 +1,5 @@
+const BasicToken = artifacts.require('./BasicToken.sol');
+const FakeMintable = artifacts.require('./FakeMintable.sol');
 const YairToken = artifacts.require('./YairToken.sol');
 const YairTokenSale = artifacts.require('./YairTokenSale.sol');
 const InitialArtworkOffering = artifacts.require('./InitialArtworkOffering.sol');
@@ -21,6 +23,12 @@ module.exports = function(deployer, network, accounts) {
         .then(() => {
             return deployer.deploy(OwnableMultiple);
         })
+/*        .then(() => {
+            return deployer.deploy(FakeMintable);
+        })*/
+        .then(() => {
+            return deployer.deploy(BasicToken);
+        })
 
         .then(() => {
             return deployer.deploy(YairToken, 0, 1000);
@@ -30,7 +38,6 @@ module.exports = function(deployer, network, accounts) {
                 YairTokenSale,
                 openingTime,
                 closingTime,
-                rate,
                 wallet,
                 YairToken.address
             );

@@ -2,29 +2,21 @@ pragma solidity 0.4.24;
 
 import "openzeppelin-solidity/contracts/math/SafeMath.sol";
 import "openzeppelin-solidity/contracts/introspection/ERC165.sol";
-import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Detailed.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/ERC20Mintable.sol";
+
 import "openzeppelin-solidity/contracts/utils/ReentrancyGuard.sol";
 
 import "./ArtworkRegistry.sol";
 
-contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
+contract YairToken is ERC20Mintable, ERC20Detailed, ArtworkRegistry, ReentrancyGuard /*, ERC165 */ {
     using SafeMath for uint256;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
     event TransferDetailled(address indexed from, address indexed to, bytes16 indexed artworkId, uint256 count);
 
-    string public name = "Yair Branded Token";
-    string public symbol = "YBT";
-    uint8 public decimals = 18;
-
     // the maximum supply on tokens that can be minted
-    uint256 _maxSupply;
-
-    // the total of minted tokens
-    uint256 _totalSupply;
-
-    // mapping storing the balance of each address
-    mapping(address => uint256) internal _balances;
+    uint256 internal _maxSupply;
 
     // mapping storing the balance of each address for specific artwork
     mapping(bytes16 => mapping(address => uint256)) internal _balancesPerArtwork;
@@ -35,21 +27,17 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
     // A mapping of token owners
     mapping(uint256 => address) internal owners;
 
-    constructor(uint initialSupply, uint256 maxSupply) public {
+    constructor(uint initialSupply, uint256 maxSupply) public
+        ERC20Detailed("Yair Branded Token", "YAT", 18)
+    {
         require(msg.sender != address(0));
         require(initialSupply <= maxSupply);
 
         _maxSupply = maxSupply;
-
-        // All initial tokens belong to creator, so set the balance
-        _balances[msg.sender] = initialSupply;
     }
 
-    /**
-     * @dev returns the total minted token
-     */
-    function totalSupply() external view returns (uint256) {
-        return _totalSupply;
+    function maxSupply() external view returns (uint256) {
+        return _maxSupply;
     }
 
     /**
@@ -57,10 +45,6 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      */
     function totalSupplyPerArtwork(bytes16 artworkId) onlyRegistered(artworkId) external view returns (uint256) {
         return _totalSupplyPerArtwork[artworkId];
-    }
-
-    function maxSupply() external view returns (uint256) {
-        return _maxSupply;
     }
 
     /*function mintTokenForArtworkId(uint256 count, string artworkId) {
@@ -82,15 +66,15 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      * @param buyer The buyer where the token will be send to
      */
     function mintTokenForArtworkIdAndSendTo(uint256 count, bytes16 artworkId, address buyer) public
-        nonReentrant onlyRegistered(artworkId) onlyOwner
+        onlyRegistered(artworkId) onlyOwner
     {
         require(count > 0);
         require(buyer != address(0));
-        require(_totalSupply.add(count) <= _maxSupply);
+        require(totalSupply().add(count) <= _maxSupply);
+        require(mint(buyer, count));
 
         _addTokenForArtworkTo(buyer, artworkId, count);
 
-        _totalSupply = _totalSupply.add(count);
         _totalSupplyPerArtwork[artworkId] = _totalSupplyPerArtwork[artworkId].add(count);
 
         emit Transfer(address(0), buyer, count);
@@ -98,10 +82,19 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
     }
 
     /**
-     * @param owner Returns the number of tokens for specific owner
+     * @dev Function to mint tokens. Controls that the CAP will be maintained
+     * after minting and then calls the MintableToken's function
+     * @param to The address that will receive the minted tokens.
+     * @param value The amount of tokens to mint.
+     * @return A boolean that indicates if the operation was successful.
      */
-    function balanceOf(address owner) external view returns (uint256) {
-        return _balances[owner];
+    function mint(address to, uint256 value) public //onlyMinter
+    returns (bool) {
+        require(value > 0);
+
+//        require(totalSupply() <= _maxSupply);
+
+        return super.mint(to, value);
     }
 
     /**
@@ -120,7 +113,8 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      * @param count The number of token to be removed from the buyers account
      */
     function transferTokenForArtworkFrom(address from, address to, bytes16 artworkId, uint256 count) external
-        onlyRegistered(artworkId) nonReentrant returns (bool)
+        onlyRegistered(artworkId)
+        returns (bool)
     {
         require(count > 0);
         require(_isApprovedOrOwner(from, artworkId, count));
@@ -128,26 +122,21 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
         require(to != address(0));
 
         _removeTokenForArtworkFrom(from, artworkId, count);
+        //require(transferFrom(from, to, count));
         _addTokenForArtworkTo(to, artworkId, count);
 
         emit Transfer(from, to, count);
         emit TransferDetailled(from, to, artworkId, count);
     }
 
-    function allowance(address owner, address spender) external view returns (uint256) {
-        revert();
-    }
-
-    function transfer(address to, uint256 value) external returns (bool) {
-        revert();
-    }
-
-    function approve(address spender, uint256 value) external returns (bool) {
-        revert();
-    }
-
-    function transferFrom(address from, address to, uint256 value) external returns (bool) {
-        revert();
+    /**
+     * @dev Function to check the amount of tokens that an owner allowed to a spender.
+     * @param owner address The address which owns the funds.
+     * @param spender address The address which will spend the funds.
+     * @return A uint256 specifying the amount of tokens still available for the spender.
+     */
+    function allowance(address owner, address spender) public view returns (uint256) {
+        return super.allowance(owner, spender);
     }
 
 
@@ -159,7 +148,6 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      */
     function _removeTokenForArtworkFrom(address from, bytes16 artworkId, uint256 count) internal {
         require(_buyerHoldsAsLeast(from, artworkId, count));
-        _balances[from] = _balances[from].sub(count);
         _balancesPerArtwork[artworkId][from] = _balancesPerArtwork[artworkId][from].sub(count);
     }
 
@@ -170,7 +158,6 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
      * @param count The number of token to be added to the buyers account
      */
     function _addTokenForArtworkTo(address to, bytes16 artworkId, uint256 count) internal {
-        _balances[to] = _balances[to].add(count);
         _balancesPerArtwork[artworkId][to] = _balancesPerArtwork[artworkId][to].add(count);
     }
 
@@ -185,7 +172,7 @@ contract YairToken is IERC20, ReentrancyGuard, ArtworkRegistry /*, ERC165 */ {
     function _isApprovedOrOwner(address spender, bytes16 artworkId, uint256 count) internal view returns (bool) {
         return (
             // the creator is approved always if the specific number of requested tokens was minted currently
-            (isOwner() && _totalSupplyPerArtwork[artworkId] >= count)
+            (/*isOwner() &&*/ _totalSupplyPerArtwork[artworkId] >= count)
             ||
             // or the spender holds a minimum of the minted requested token count
             _buyerHoldsAsLeast(spender, artworkId, count)
