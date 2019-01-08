@@ -10,7 +10,7 @@ ganache-cli  --gasLimit 0xfffffffffff
 
 In another terminal:
 
-Change into working directory for smart contracts (without the “>”):
+Change into working directory for smart contracts:
 
 ```
 cd ~/Development/yair/yair-token
