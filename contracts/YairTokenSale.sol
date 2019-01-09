@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.0;
 
 import "./YairToken.sol";
 import "openzeppelin-solidity/contracts/crowdsale/emission/MintedCrowdsale.sol";
@@ -8,14 +8,14 @@ import "openzeppelin-solidity/contracts/crowdsale/validation/TimedCrowdsale.sol"
 contract YairTokenSale is /*TimedCrowdsale,*/ MintedCrowdsale {
 
     constructor(
-        uint256 _openingTime,
-        uint256 _closingTime,
-        address _wallet,
-        YairToken _token
+        uint256 openingTime,
+        uint256 closingTime,
+        address payable wallet,
+        YairToken token
     )
     public
         // use 1 as a fake rate
-        Crowdsale(1, _wallet, _token)
+        Crowdsale(1, wallet, token)
         //TimedCrowdsale(_openingTime, _closingTime)
     {
     }
@@ -40,8 +40,9 @@ contract YairTokenSale is /*TimedCrowdsale,*/ MintedCrowdsale {
      * @return Number of tokens that can be purchased with the specified _weiAmount
      */
     function _getTokenAmount(uint256 weiAmount) internal view returns (uint256) {
-        uint256 rate = getCurrentRate();
-        return weiAmount.mul(rate);
+        uint256 _rate = getCurrentRate();
+        return weiAmount.mul(_rate);
     }
+
 
 }

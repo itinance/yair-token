@@ -1,4 +1,4 @@
-pragma solidity 0.4.24;
+pragma solidity 0.5.0;
 
 import "./OwnableMultiple.sol";
 
@@ -24,7 +24,7 @@ contract ArtworkRegistry is OwnableMultiple {
         _;
     }
 
-    function registerArtwork(bytes16 artworkId, string title, string artist) onlyIfUnregistered(artworkId) external onlyOwner returns (bool) {
+    function registerArtwork(bytes16 artworkId, string calldata title, string calldata artist) onlyIfUnregistered(artworkId) external onlyOwner returns (bool) {
         Artwork memory artwork = Artwork(artworkId, title, artist);
         _artworks[artworkId] = artwork;
 

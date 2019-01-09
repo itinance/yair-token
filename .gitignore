@@ -36,4 +36,4 @@ build/
 .DS_Store/
 
 # truffle
-.node-xmlhttprequest-*
+.node-xmlhttprequest-*package-lock.json

@@ -1,4 +1,4 @@
-pragma solidity ^0.4.24;
+pragma solidity ^0.5.0;
 
 /**
  * @title OwnableMultiple
@@ -48,7 +48,7 @@ contract OwnableMultiple {
      * @param newOwner The address to transfer ownership to.
      */
     function _addOwner(address newOwner) internal {
-        require(newOwner != 0x0);
+        require(newOwner != address(0));
         _owners[newOwner] = true;
         emit OwnershipAdded(newOwner, msg.sender);
     }
