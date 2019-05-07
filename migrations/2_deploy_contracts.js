@@ -10,9 +10,12 @@ const ARTWORK_ID_DEFAULT = 'artwork_0';
 
 const BigNumber = web3.utils.BN;
 
-module.exports = function(deployer, network, accounts) {
-    const openingTime = web3.eth.getBlock('latest').timestamp + 2; // two secs in the future
+module.exports = async (deployer, network, accounts) => {
+    const latestBlock = await web3.eth.getBlock('latest');
+    const openingTime = latestBlock.timestamp + 2; // two secs in the future
     const closingTime = openingTime + 86400 * 30; // 30 days
+
+
     const rate = new BigNumber(1000);
     const wallet = accounts[1];
 

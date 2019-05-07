@@ -38,49 +38,6 @@ truffle migrate && truffle test
 ```
 
 
-## YAIR Token Specs
-
-
-
-
-**Token Supply:** 1 billion tokens, fixed
-
-
-
-**Token States:** “unbranded”, “branded”
-
-
-
-**Token Format:**
-
-
-
-For the “unbranded” YAIR base token we shall use an ERC20 token standard. This will provide the following advantages:
-
--   fast track and cheap auditing
-
--   easy integration into existing wallets
-
--   possible adoption by existing exchanges.
-
-
-
-
-When “unbranded” tokens are committed to I.A.O. (Initial Artwork Offering) they change state from “unbranded” to “branded” tokens. This process puts the “unbranded” YAIRS (ERC20) into a “paused” state they are frozen, and mints “branded tokens”. The logic is that the tokens exist can move from a branded to an unbranded state and back again but the total supply of YAIRS stays fixed.
-
-For the “branded” YAIR token more complexity is unavoidable.
-
-After reviewing ERC20 and ERC721, (and other more experimental token standards like ERC1155) we realised that we must create a new token standard with some functionality from both ERC20 and ERC721. Our token standard is essentially an extension of the ERC20 token standard that allows it to have subdivisions that can be used to express equity in an asset… So if the ownership is expressed 100% by the total supply of the asset token, then each token from the subdivision that represents an asset is an equity portion = 1/(total supply of asset).
-
-
-
-The reason ERC721 was not suitable is that it exists as an individually numbered supply. Each token has an ID. Each transfer, branding or rebranding must be separate “on chain” operation for each individual token, making it expensive and slow. Some fungibility makes it more efficient.
-
-
-
-We have begun to develop a new general token standard that we will use for our “branded” tokens. We aim to submit our new token standard as an EIP and also an Aeternity token standard. We will provide base classes to the OpenZeppelin framework (and any Aeternity equivalent framework) with a pull request to their github repository and we will seek community sourced improvements.
-
-
 
 **Token Standard for Co-Owned Assets (C.O.A. standard).**
 
@@ -163,3 +120,48 @@ This mapping maps **assetID** to **assetMetaData**
     }
 
     mapping (string => uint256) private _assetMetaData;
+
+
+
+(NOtes for development)
+
+
+ERC20 Methods
+
+- list all open IAOs
+- brand token fro specific artwork
+- list my branded token
+- unbrand a token
+- brandToken nur bei aktuellen IAOs
+- lock token in precommit phase
+- unbrand token kostet penalty fee
+
+- M;ultiplier on per IAO phses
+>  recipient address for burned tokens
+>  getRate()
+
+
+----
+
+Phase -> IAO Contract
+Refunding/Cancellation
+No unbrand during Precommit phase or cancellation (state)
+Cancel State
+Artwork-reserve (no access ferom outside)
+Difference of multiplier goes to special wallet (defaiults to artwork reserve)
+
+Wenn die base valuation erreicht wurde, landet a
+
+
+Input für IAO:
+- base valuation (YAIR)
+- precommit phase bis das voll ist
+- Verteilungsschlüssel
+    + mapping(address => percentage)
+- method payOutShareholders()
+- refund()
+
+
+Extra token/wallet for IR
+
+
